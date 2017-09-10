@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mato="clr-namespace:Mato;assembly=Mato.AutoComplete.PCL"
+             x:Class="Mato.Sample.MainPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <mato:AutoCompleteView      Placeholder="Search"
+                                    SearchTextColor="White"
+                                    TextColor="White"
+                                    TextBackgroundColor="Gray"
+                                    SearchBackgroundColor="#DADADA"
+                                    SearchBorderRadius="5"
+                                    SelectedCommand="{Binding ItemSelectedCommand}"
+                                    SelectedItem="{Binding SelectedItem}"
+                                    ShowSearchButton="False"
+                                    SuggestionBackgroundColor="DimGray"
+                                    Suggestions="{Binding Musics,Mode=TwoWay}">
+
+            <mato:AutoCompleteView.SuggestionItemDataTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Title}"
+                              TextColor="Black"></TextCell>
+                </DataTemplate>
+
+            </mato:AutoCompleteView.SuggestionItemDataTemplate>
+        </mato:AutoCompleteView>
+        <ListView Grid.Row="1"
+                  ItemsSource="{Binding Musics,Mode=TwoWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <Label Grid.Column="0"
+                                   Text="{Binding Title}"></Label>
+                            <Label Grid.Column="1"
+                                   Text="{Binding AlbumTitle}"></Label>
+                            <Label Grid.Column="2"
+                                   Text="{Binding Artist}"></Label>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentPage>

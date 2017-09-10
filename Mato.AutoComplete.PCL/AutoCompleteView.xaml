@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mato.AutoCompleteView">
+    <ContentView.Content>
+        <StackLayout x:Name="StkBase">
+            <StackLayout x:Name="InnerLayout">
+                <Entry x:Name="EntText"
+                       TextChanged="EntText_OnTextChanged"></Entry>
+                <Button x:Name="BtnSearch"
+                        Clicked="BtnSearch_OnClicked"></Button>
+            </StackLayout>
+            <ListView x:Name="LstSuggestions"
+                      ItemSelected="LstSuggestions_OnItemSelected"
+                      HasUnevenRows="True"></ListView>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>
