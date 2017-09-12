@@ -138,6 +138,9 @@ namespace Mato.AutoComplete.UWP
         public static readonly DependencyProperty TextVerticalOptionsProperty = DependencyProperty.Register(nameof(TextVerticalOptions), typeof(string), typeof(VerticalAlignment), new PropertyMetadata(VerticalAlignment.Top, TestVerticalOptionsChanged));
         private readonly ObservableCollection<IClueObject> _availableSuggestions;
 
+
+        public static readonly DependencyProperty DisplayPathProperty = DependencyProperty.Register(nameof(DisplayPath), typeof(string), typeof(AutoCompleteView), new PropertyMetadata(string.Empty));
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoCompleteView"/> class.
         /// </summary>
@@ -389,6 +392,12 @@ namespace Mato.AutoComplete.UWP
         {
             get { return (VerticalAlignment)GetValue(TextVerticalOptionsProperty); }
             set { SetValue(TextVerticalOptionsProperty, value); }
+        }
+
+        public string DisplayPath
+        {
+            get { return (string)GetValue(DisplayPathProperty); }
+            set { SetValue(DisplayPathProperty, value); }
         }
         private static void PlaceHolderChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
@@ -739,8 +748,28 @@ namespace Mato.AutoComplete.UWP
 
         private void LstSuggestions_OnItemSelected(object sender, ItemClickEventArgs e)
         {
-            EntText.Text = e.ClickedItem.ToString();
+            var SelectedItem = e.ClickedItem;
+            //If not null, bind as specified by Path
+            if (!string.IsNullOrEmpty(DisplayPath))
+            {
+                this.EntText.DataContext = SelectedItem;
+                var binding = new Binding() { Path = new PropertyPath(DisplayPath) };
+                EntText.SetBinding(TextBox.TextProperty, binding);
 
+            }
+            //If Path is empty, assignment is based on the first result of ClueString
+            else
+            {
+                var clueObject = SelectedItem as IClueObject;
+                if (clueObject != null)
+                {
+                    var candidateDisplay = clueObject.ClueStrings.FirstOrDefault();
+                    //The first result of ClueString is empty, only ToString, What a tragedy!
+                    EntText.Text = !string.IsNullOrEmpty(candidateDisplay) ?
+                        candidateDisplay :
+                        SelectedItem.ToString();
+                }
+            }
             _availableSuggestions.Clear();
             ShowHideListbox(false);
             OnSelectedItemChanged(e.ClickedItem);
@@ -754,8 +783,7 @@ namespace Mato.AutoComplete.UWP
         }
 
 
-
     }
-    
+
 
 }

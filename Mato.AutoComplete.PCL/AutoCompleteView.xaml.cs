@@ -131,7 +131,12 @@ namespace Mato
         /// <summary>
         /// The text vertical options property.
         /// </summary>
-        public static readonly BindableProperty TextVerticalOptionsProperty = BindableProperty.Create<AutoCompleteView, LayoutOptions>(p => p.TextVerticalOptions, LayoutOptions.Start, BindingMode.TwoWay, null, TestVerticalOptionsChanged);
+        public static readonly BindableProperty TextVerticalOptionsProperty =
+            BindableProperty.Create(nameof(TextVerticalOptions), typeof(LayoutOptions), typeof(AutoCompleteView), LayoutOptions.Start, BindingMode.TwoWay, null, propertyChanged: TestVerticalOptionsChanged);
+
+        public static readonly BindableProperty DisplayPathProperty =
+            BindableProperty.Create(nameof(DisplayPath), typeof(string), typeof(AutoCompleteView), string.Empty);
+
         private readonly ObservableCollection<IClueObject> _availableSuggestions;
 
         /// <summary>
@@ -410,6 +415,13 @@ namespace Mato
             get { return (LayoutOptions)GetValue(TextVerticalOptionsProperty); }
             set { SetValue(TextVerticalOptionsProperty, value); }
         }
+
+
+        public string DisplayPath
+        {
+            get { return (string)GetValue(DisplayPathProperty); }
+            set { SetValue(DisplayPathProperty, value); }
+        }
         /// <summary>
         /// Places the holder changed.
         /// </summary>
@@ -610,12 +622,12 @@ namespace Mato
         /// <param name="obj">The object.</param>
         /// <param name="oldValue">The old value.</param>
         /// <param name="newValue">The new value.</param>
-        private static void TestVerticalOptionsChanged(BindableObject obj, LayoutOptions oldValue, LayoutOptions newValue)
+        private static void TestVerticalOptionsChanged(BindableObject obj, object oldValue, object newValue)
         {
             var autoCompleteView = obj as AutoCompleteView;
             if (autoCompleteView != null)
             {
-                autoCompleteView.EntText.VerticalOptions = newValue;
+                autoCompleteView.EntText.VerticalOptions = (LayoutOptions)newValue;
             }
         }
 
@@ -690,7 +702,7 @@ namespace Mato
                                     var result = false;
                                     foreach (var item in x.ClueStrings)
                                     {
-                                        if (item.StartsWith(cleanedNewPlaceHolderValue,StringComparison.OrdinalIgnoreCase))
+                                        if (item.StartsWith(cleanedNewPlaceHolderValue, StringComparison.OrdinalIgnoreCase))
                                         {
                                             result = true;
                                         }
@@ -782,7 +794,27 @@ namespace Mato
 
         private void LstSuggestions_OnItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            EntText.Text = e.SelectedItem.ToString();
+            //If not null, bind as specified by Path
+            if (!string.IsNullOrEmpty(DisplayPath))
+            {
+                this.EntText.BindingContext = e.SelectedItem;
+                var binding = new Binding(DisplayPath);
+                EntText.SetBinding(Entry.TextProperty, binding);
+
+            }
+            //If Path is empty, assignment is based on the first result of ClueString
+            else
+            {
+                var clueObject = e.SelectedItem as IClueObject;
+                if (clueObject != null)
+                {
+                    var candidateDisplay = clueObject.ClueStrings.FirstOrDefault();
+                    //The first result of ClueString is empty, only ToString, What a tragedy!
+                    EntText.Text = !string.IsNullOrEmpty(candidateDisplay) ?
+                        candidateDisplay :
+                        e.SelectedItem.ToString();
+                }
+            }
 
             _availableSuggestions.Clear();
             ShowHideListbox(false);

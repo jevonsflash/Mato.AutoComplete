@@ -12,6 +12,7 @@
 
         <mato:AutoCompleteView      Placeholder="Search"
                                     SearchTextColor="White"
+                                    DisplayPath="Title"
                                     TextColor="White"
                                     TextBackgroundColor="Gray"
                                     SearchBackgroundColor="#DADADA"
