@@ -17,6 +17,7 @@ namespace Mato
     public partial class AutoCompleteView : ContentView
     {
 
+        private bool _seletedFlag = false;
 
         /// <summary>
         /// The execute on suggestion click property.
@@ -683,7 +684,14 @@ namespace Mato
         /// <param name="newPlaceHolderValue">The new place holder value.</param>
         private static async void TextValueChanged(BindableObject obj, string oldPlaceHolderValue, string newPlaceHolderValue)
         {
+
             var control = obj as AutoCompleteView;
+            //Just selected a item
+            if (control._seletedFlag)
+            {
+                control._seletedFlag = false;
+                return;
+            }
 
             if (control != null)
             {
@@ -818,6 +826,7 @@ namespace Mato
 
             _availableSuggestions.Clear();
             ShowHideListbox(false);
+            _seletedFlag = true;
             OnSelectedItemChanged(e.SelectedItem);
 
             if (ExecuteOnSuggestionClick

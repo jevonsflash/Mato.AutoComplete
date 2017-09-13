@@ -70,7 +70,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Mato.AutoComplete.PCL\Mato.AutoComplete.PCL\Mato.AutoComplete.PCL.csproj">
+    <ProjectReference Include="..\..\Mato.AutoComplete.PCL\Mato.AutoComplete.PCL.csproj">
       <Project>{9f66770c-6850-4a11-abf4-a0a347d03b5d}</Project>
       <Name>Mato.AutoComplete.PCL</Name>
     </ProjectReference>

@@ -27,6 +27,7 @@ namespace Mato.AutoComplete.UWP
     public sealed partial class AutoCompleteView : UserControl
     {
 
+        private bool _seletedFlag = false;
 
         /// <summary>
         /// The execute on suggestion click property.
@@ -626,6 +627,13 @@ namespace Mato.AutoComplete.UWP
             var oldPlaceHolderValue = (string)e.OldValue;
             var newPlaceHolderValue = (string)e.NewValue;
             var control = obj as AutoCompleteView;
+            //Just selected a item
+            if (control._seletedFlag)
+            {
+                control._seletedFlag = false;
+                return;
+            }
+
 
             if (control != null)
             {
@@ -772,6 +780,7 @@ namespace Mato.AutoComplete.UWP
             }
             _availableSuggestions.Clear();
             ShowHideListbox(false);
+            _seletedFlag = true;
             OnSelectedItemChanged(e.ClickedItem);
 
             if (ExecuteOnSuggestionClick
